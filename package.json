@@ -32,6 +32,9 @@
     "api:baseline:generate": "node scripts/check-api-baseline.mjs --generate",
     "pack:smoke": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "npm run build",
+    "test:devnet:deep": "AGENC_DEVNET_DRIFT_MODE=compat node scripts/devnet-integration-deep.mjs",
+    "test:devnet:deep:strict": "AGENC_DEVNET_DRIFT_MODE=strict node scripts/devnet-integration-deep.mjs",
+    "test:devnet:public": "node scripts/devnet-integration.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
