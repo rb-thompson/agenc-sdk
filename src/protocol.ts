@@ -5,7 +5,8 @@ import {
   SystemProgram,
   type AccountMeta,
 } from "@solana/web3.js";
-import anchor, { type Program } from "@coral-xyz/anchor";
+import * as anchor from "@coral-xyz/anchor";
+import { type Program } from "@coral-xyz/anchor";
 import { PROGRAM_ID, SEEDS } from "./constants";
 import { getAccount } from "./anchor-utils";
 import { toBigInt, toNumber } from "./utils/numeric";

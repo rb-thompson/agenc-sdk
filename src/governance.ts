@@ -3,7 +3,8 @@
  */
 
 import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
-import anchor, { type Program } from "@coral-xyz/anchor";
+import * as anchor from "@coral-xyz/anchor";
+import { type Program } from "@coral-xyz/anchor";
 import { PROGRAM_ID, SEEDS } from "./constants.js";
 import { getAccount } from "./anchor-utils.js";
 import { deriveProtocolPda } from "./protocol.js";
