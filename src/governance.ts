@@ -3,8 +3,8 @@
  */
 
 import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
-import * as anchor from "@coral-xyz/anchor";
 import { type Program } from "@coral-xyz/anchor";
+import { AnchorBN } from "./anchor-bn.js";
 import { PROGRAM_ID, SEEDS } from "./constants.js";
 import { getAccount } from "./anchor-utils.js";
 import { deriveProtocolPda } from "./protocol.js";
@@ -151,11 +151,11 @@ export async function initializeGovernance(
 
   const tx = await program.methods
     .initializeGovernance(
-      new anchor.BN(params.votingPeriod.toString()),
-      new anchor.BN(params.executionDelay.toString()),
+      new AnchorBN(params.votingPeriod.toString()),
+      new AnchorBN(params.executionDelay.toString()),
       params.quorumBps,
       params.approvalThresholdBps,
-      new anchor.BN(params.minProposalStake.toString()),
+      new AnchorBN(params.minProposalStake.toString()),
     )
     .accountsPartial({
       governanceConfig: governanceConfigPda,
@@ -186,12 +186,12 @@ export async function createProposal(
 
   const tx = await program.methods
     .createProposal(
-      new anchor.BN(params.nonce.toString()),
+      new AnchorBN(params.nonce.toString()),
       params.proposalType,
       Array.from(params.titleHash),
       Array.from(params.descriptionHash),
       Array.from(params.payload),
-      new anchor.BN((params.votingPeriod ?? 0).toString()),
+      new AnchorBN((params.votingPeriod ?? 0).toString()),
     )
     .accountsPartial({
       proposal: proposalPda,

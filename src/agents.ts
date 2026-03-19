@@ -1,6 +1,6 @@
 import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
-import * as anchor from "@coral-xyz/anchor";
 import { type Program } from "@coral-xyz/anchor";
+import { AnchorBN } from "./anchor-bn";
 import { PROGRAM_ID, SEEDS } from "./constants";
 import { getAccount } from "./anchor-utils";
 import { deriveProtocolPda } from "./protocol";
@@ -94,10 +94,10 @@ export async function registerAgent(
   const tx = await program.methods
     .registerAgent(
       Array.from(agentId),
-      new anchor.BN(params.capabilities.toString()),
+      new AnchorBN(params.capabilities.toString()),
       params.endpoint,
       params.metadataUri ?? null,
-      new anchor.BN(params.stakeAmount.toString()),
+      new AnchorBN(params.stakeAmount.toString()),
     )
     .accountsPartial({
       agent: agentPda,
@@ -125,7 +125,7 @@ export async function updateAgent(
   const capabilities =
     params.capabilities === undefined || params.capabilities === null
       ? null
-      : new anchor.BN(params.capabilities.toString());
+      : new AnchorBN(params.capabilities.toString());
 
   const builder = program.methods
     .updateAgent(

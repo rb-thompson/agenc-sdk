@@ -12,8 +12,8 @@ import {
   SystemProgram,
   ComputeBudgetProgram,
 } from "@solana/web3.js";
-import * as anchor from "@coral-xyz/anchor";
 import { type Program } from "@coral-xyz/anchor";
+import { AnchorBN } from "./anchor-bn";
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
@@ -477,11 +477,11 @@ export async function createTask(
     program.methods
       .createTask(
         Array.from(context.idBytes),
-        new anchor.BN(params.requiredCapabilities.toString()),
+        new AnchorBN(params.requiredCapabilities.toString()),
         Buffer.from(params.description),
-        new anchor.BN(params.rewardAmount.toString()),
+        new AnchorBN(params.rewardAmount.toString()),
         params.maxWorkers,
-        new anchor.BN(params.deadline),
+        new AnchorBN(params.deadline),
         params.taskType,
         params.constraintHash ?? null,
         params.minReputation ?? 0,
@@ -532,11 +532,11 @@ export async function createDependentTask(
       program.methods
         .createDependentTask(
           Array.from(context.idBytes),
-          new anchor.BN(params.requiredCapabilities.toString()),
+          new AnchorBN(params.requiredCapabilities.toString()),
           Buffer.from(params.description),
-          new anchor.BN(params.rewardAmount.toString()),
+          new AnchorBN(params.rewardAmount.toString()),
           params.maxWorkers,
-          new anchor.BN(params.deadline),
+          new AnchorBN(params.deadline),
           params.taskType,
           params.constraintHash ?? null,
           params.dependencyType,
@@ -788,7 +788,7 @@ export async function completeTaskPrivate(
 
   // Extract task_id as u64 (first 8 bytes LE)
   const taskIdBuf = Buffer.from(task.taskId!);
-  const taskIdU64 = new anchor.BN(taskIdBuf.subarray(0, 8), "le");
+  const taskIdU64 = new AnchorBN(taskIdBuf.subarray(0, 8), "le");
 
   const mint = task.rewardMint;
   const tokenAccounts = buildCompletionTokenAccounts(

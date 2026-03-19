@@ -5,8 +5,8 @@ import {
   SystemProgram,
   type AccountMeta,
 } from "@solana/web3.js";
-import * as anchor from "@coral-xyz/anchor";
 import { type Program } from "@coral-xyz/anchor";
+import { AnchorBN } from "./anchor-bn";
 import { PROGRAM_ID, SEEDS } from "./constants";
 import { getAccount } from "./anchor-utils";
 import { toBigInt, toNumber } from "./utils/numeric";
@@ -170,8 +170,8 @@ export async function initializeProtocol(
     .initializeProtocol(
       params.disputeThreshold,
       params.protocolFeeBps,
-      new anchor.BN(params.minStake.toString()),
-      new anchor.BN(params.minStakeForDispute.toString()),
+      new AnchorBN(params.minStake.toString()),
+      new AnchorBN(params.minStakeForDispute.toString()),
       params.multisigThreshold,
       params.multisigOwners,
     )
@@ -223,11 +223,11 @@ export async function updateRateLimits(
     "updateRateLimits",
     () =>
       program.methods.updateRateLimits(
-        new anchor.BN(params.taskCreationCooldown.toString()),
+        new AnchorBN(params.taskCreationCooldown.toString()),
         params.maxTasksPer24h,
-        new anchor.BN(params.disputeInitiationCooldown.toString()),
+        new AnchorBN(params.disputeInitiationCooldown.toString()),
         params.maxDisputesPer24h,
-        new anchor.BN(params.minStakeForDispute.toString()),
+        new AnchorBN(params.minStakeForDispute.toString()),
       ) as unknown as MultisigInstructionBuilder,
   );
 }
