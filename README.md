@@ -2,19 +2,19 @@
 
 Privacy-preserving agent coordination on Solana.
 
-This repository is the canonical public home for the AgenC SDK. It owns:
+This repo is the canonical public home for the AgenC SDK. It owns:
 
 - the published `@tetsuo-ai/sdk` package
-- SDK changelog and release authority
+- the public SDK changelog and release authority
 - the SDK API baseline in `docs/api-baseline/sdk.json`
-- the curated `examples/private-task-demo` starter example
+- the curated `examples/private-task-demo` example
 
-## Features
+## Start Here
 
-- Generate RISC0 private payloads for task completion.
-- Submit private completions through router-based verification.
-- Enforce strict payload validation before submission.
-- Keep reward/claim/escrow flows consistent with public task completion.
+- [docs/DOCS_INDEX.md](docs/DOCS_INDEX.md) - reading order for developers and AI agents
+- [docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md) - repo structure and file ownership
+- [docs/MODULE_INDEX.md](docs/MODULE_INDEX.md) - grouped public export map
+- [docs/MAINTAINER_GUIDE.md](docs/MAINTAINER_GUIDE.md) - validation and release workflow
 
 ## Installation
 
@@ -22,20 +22,43 @@ This repository is the canonical public home for the AgenC SDK. It owns:
 npm install @tetsuo-ai/sdk
 ```
 
-## Private payload model
+## Repo Layout
+
+```text
+agenc-sdk/
+  src/                         public package source
+  src/__tests__/               module-level contract tests
+  docs/api-baseline/           API drift snapshot
+  examples/private-task-demo/  curated runnable example
+  scripts/                     baseline and pack-smoke tooling
+  .github/workflows/           CI and publish automation
+```
+
+## Public API Families
+
+- Proofs and prover wiring: `proofs.ts`, `prover.ts`, `proof-validation.ts`
+- Task lifecycle and queries: `tasks.ts`, `queries.ts`, `tokens.ts`
+- Agent, dispute, governance, and protocol helpers: `agents.ts`, `disputes.ts`, `governance.ts`, `protocol.ts`, `state.ts`
+- Diagnostics and compatibility: `errors.ts`, `logger.ts`, `process-identity.ts`, `version.ts`
+- Convenience wrapper: `client.ts`
+- Supported subpath export: `@tetsuo-ai/sdk/internal/spl-token`
+
+See [docs/MODULE_INDEX.md](docs/MODULE_INDEX.md) for the grouped export list.
+
+## Private Payload Model
 
 `generateProof()` returns:
 
-- `sealBytes` (260 bytes: trusted selector + Groth16 proof)
-- `journal` (192 bytes)
-- `imageId` (32 bytes)
-- `bindingSeed` (32 bytes)
-- `nullifierSeed` (32 bytes)
+- `sealBytes` - 260 bytes: trusted selector plus Groth16 proof
+- `journal` - 192 bytes
+- `imageId` - 32 bytes
+- `bindingSeed` - 32 bytes
+- `nullifierSeed` - 32 bytes
 
-## Quick start
+## Quick Start
 
 ```ts
-import { generateProof, generateSalt, completeTaskPrivate } from '@tetsuo-ai/sdk';
+import { generateProof, generateSalt, completeTaskPrivate } from "@tetsuo-ai/sdk";
 
 const proof = await generateProof(
   {
@@ -45,7 +68,7 @@ const proof = await generateProof(
     salt: generateSalt(),
     agentSecret: 12345n,
   },
-  { kind: 'remote', endpoint: 'https://prover.example.com' }
+  { kind: "remote", endpoint: "https://prover.example.com" },
 );
 
 await completeTaskPrivate(
@@ -73,9 +96,11 @@ The SDK derives and submits the required verification accounts:
 - `bindingSpend`
 - `nullifierSpend`
 
-## Core APIs
+## Safe Private Completion Flow
 
-### Proof functions
+- `completeTaskPrivate(...)` submits the payload directly
+- `runProofSubmissionPreflight(...)` performs client-side validation
+- `completeTaskPrivateSafe(...)` combines the preflight path with the submit flow
 
 - `generateProof(params, proverConfig)` — generates a real RISC Zero proof via the remote prover service
 - `computeHashes(taskPda, agentPubkey, output, salt, agentSecret)` — computes all hash fields without proof generation
@@ -98,25 +123,27 @@ The SDK derives and submits the required verification accounts:
 - trusted selector/image requirements
 - replay state checks for `bindingSpend` and `nullifierSpend`
 
-## Security notes
+## Security Notes
 
 - Never reuse salt values across distinct outputs.
-- Use an explicit `agentSecret` for nullifier derivation in production paths.
-- Proof verification happens on-chain via the RISC Zero Verifier Router CPI — there is no local verification function.
+- Use an explicit `agentSecret` for nullifier derivation in production flows.
+- Proof verification happens on-chain through the RISC Zero verifier-router path; there is no local verification shortcut in this package.
 
 ## Examples
 
-- `examples/private-task-demo/`
+- [examples/private-task-demo/README.md](examples/private-task-demo/README.md)
 
-## Release gates
+## Release Gates
 
 Every release must pass:
 
-- `npm run build`
-- `npm run typecheck`
-- `npm run test`
-- `npm run api:baseline:check`
-- `npm run pack:smoke`
+```bash
+npm run build
+npm run typecheck
+npm run test
+npm run api:baseline:check
+npm run pack:smoke
+```
 
 ## Devnet validation
 
@@ -238,6 +265,13 @@ so public devnet requires a later resume run:
 DELEGATOR_WALLET=/path/to/delegator.json \
 npm run test:devnet:reputation -- --resume /tmp/agenc-sdk-devnet/reputation-....json
 ```
+
+## Cross-Repo Boundaries
+
+- `agenc-protocol` owns the public protocol artifacts and on-chain source of truth
+- `agenc-plugin-kit` owns the public plugin authoring ABI
+- `agenc-core` owns runtime and product implementation details
+- `agenc-prover` owns the proving service and private admin flows
 
 ## Protocol alignment note
 

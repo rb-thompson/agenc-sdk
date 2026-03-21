@@ -47,8 +47,8 @@ export const SDK_PROTOCOL_VERSION = 1;
 /** Must match MIN_SUPPORTED_VERSION in programs/agenc-coordination/src/state.rs */
 export const SDK_MIN_PROTOCOL_VERSION = 1;
 
-/** Human-readable SDK package version. Keep in sync with sdk/src/index.ts VERSION. */
-export const SDK_PACKAGE_VERSION = "1.3.0";
+/** Human-readable SDK package version. Keep in sync with package.json. */
+export const SDK_PACKAGE_VERSION = "1.3.1";
 
 const FEATURE_REGISTRY: Record<number, Partial<FeatureFlags>> = {
   1: {
